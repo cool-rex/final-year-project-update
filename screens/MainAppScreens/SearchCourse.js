@@ -9,7 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import axios from 'axios';
 import filter from 'lodash.filter';
 
-   const url = 'https://ugpartnerrex.pythonanywhere.com/'
+   const url = 'https://ugpartner.pythonanywhere.com/'
 
 const SearchCourse = () => {
     const navigation = useNavigation();
@@ -83,20 +83,6 @@ const SearchCourse = () => {
         getCourseData();
     }, [])
 
-    // if(isLoading){
-    //     return(
-    //         <View style={{flex:1, justifyContent: 'center', alignItems: 'center'}}>
-    //             <ActivityIndicator size={'small'} color={color.primary} />
-    //         </View>
-    //     )
-    // }
-    // if(error){
-    //     return(
-    //         <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: color.background, paddingHorizontal: 16,}}>
-    //             <Text style={{color: color.primary, fontSize: 20, fontFamily: font.medium}}>Error in fetching data... Please check your internet connection</Text>
-    //         </View>
-    //     )
-    // }
     return(
         <SafeAreaView style={{flex: 1}}>
             <SafeAreaView style={{flex: 1, }}>
@@ -159,7 +145,7 @@ const SearchCourse = () => {
                 }
                 <FlatList
                     data={courseData}
-                    keyExtractor={(item)=> item.id}
+                    keyExtractor={(item)=> item.course_title}
                     renderItem={({item})=> (
                         <Deets courseName={item.course_title} courseCode={item.course_id}/>
                     )}

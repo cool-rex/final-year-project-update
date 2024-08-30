@@ -75,31 +75,15 @@ const Home = ({userId}) => {
     setLoading(false)
     }
 
-    const getCounsellingDays = async ()  =>{
-        const getCounsellingDaysData = [];
-
-        const querySnapshot = await getDocs(collection(db, "counsellingdays"));
-        
-        querySnapshot.forEach((doc) => {
-        getCounsellingDaysData.push({
-            ...doc.data(),
-            key: doc.id,
-        });
-    });
-    setCounsellingDays(getCounsellingDaysData);
-    setLoading(false)
-    }
     
     useEffect(()=>{
         getUserData();
         getNews();
-        getCounsellingDays();
     }, [])
     
     const forOnRefresh = () => {
         getUserData();
         getNews();
-        getCounsellingDays();
     }
 
     let today = new Date()
@@ -123,6 +107,8 @@ const Home = ({userId}) => {
     const academicFeesLink = 'https://sts.ug.edu.gh/services/pay/academic';
     const residentialFeesLink = 'https://sts.ug.edu.gh/services/pay/residential';
     const internshipFeesLink = 'https://sts.ug.edu.gh/services/pay/internship';
+    const sakaiLink = 'https://sakai.ug.edu.gh/portal'
+    const stsTimetableLink = 'https://sts.ug.edu.gh/timetable/'
 
 
     const OpenURLButton = ({url, children}) => {
@@ -142,6 +128,25 @@ const Home = ({userId}) => {
             </TouchableOpacity>
         )
       };
+      const OpenURLButton1 = ({url, coloR, img, children1, children}) => {
+        const handlePress = useCallback(async () => {
+          const supported = await Linking.canOpenURL(url);
+      
+          if (supported) {
+            await Linking.openURL(url);
+          } 
+        }, [url]);
+      
+        return (
+            <TouchableOpacity onPress={handlePress} style={{width: "45%", height: 120, backgroundColor: coloR, borderRadius: 20,}} activeOpacity={0.7}>
+                <Image source={img} style={{width: "100.5%", height: '100.5%', borderRadius: 20 }}/>
+                <View style={{marginHorizontal: 16, marginVertical:12, position:'absolute'}}>
+                    <Text style={{fontFamily: font.medium, fontSize: 16, color: '#fff',}}>{children}</Text>
+                    {children1 && <Text style={{fontFamily: font.regular, fontSize: 16, color: '#fff'}}>{children1}</Text>}
+                </View>
+            </TouchableOpacity>
+        )
+      };
     const PayFees = () => {
         return(
             <SafeAreaView>
@@ -151,6 +156,16 @@ const Home = ({userId}) => {
                     <OpenURLButton url={internshipFeesLink}>Make Payment for Internship Fees</OpenURLButton>
                 </View>
             </SafeAreaView>
+        )
+    }
+
+    const SakaiTimetable = () => {
+        return(
+            // <SafeAreaView>
+                <>
+                    <OpenURLButton1 url={sakaiLink} coloR='#1B75FF' img={weeklyImg} children1="">Sakai</OpenURLButton1>
+                    <OpenURLButton1 url={stsTimetableLink} coloR="#858EF8" img={scheduleImg} children1="Timetable">Daily</OpenURLButton1>
+                </>
         )
     }
 
@@ -195,60 +210,7 @@ const Home = ({userId}) => {
         <StatusBar style="auto" translucent={false} />
     </Modal>
 
-    {/* Welcome to the guidance and counselling unit  */}
-    <Modal visible={open1} animationType="slide">
-            <SafeAreaView style={{flex: 1, }}>
-            <View style={{flex: 1, backgroundColor: color.background,}}>
-            <View style={{flex: 1, marginHorizontal: 20, marginTop: 16 }}>
-                <View style={{display: 'flex', flexDirection: 'row'}}>
-                <MaterialIcons
-                    name="arrow-back-ios"
-                    size={24}
-                    onPress={()=>setOpen1(false)}
-                    style={{marginBottom: 10,
-                        // borderWidth: 1,
-                        // borderRadius: 10,
-                        paddingVertical: 6,
-                        paddingRight: 6,
-                        borderColor: '#ddd',
-                        alignSelf: "flex-start",}}
-                    />
-                    <Text style={{color: color.primary, fontSize: 20, fontFamily: font.semiBold, }}>Welcome to the guidance and counselling unit</Text>
-                </View>
-                <Text style={{color: "#5A5A5A", fontFamily: font.regular, fontSize: 20, marginTop: 40}}>Book an appointment with us now!</Text>
-                <View style={{marginTop: 30, width: '105%',  marginLeft: -10, }}>
-                <Input
-                        placeholder="Enter your student email address here" 
-                        leftIcon={<FontAwesome
-                            name='envelope'
-                            size={20}
-                            color= '#999999'
-                            style={{paddingRight: 12,}}
-                            
-                    />}
-                        type="email"
-                        value={counEmail}
-                        onChangeText={(email)=>setCounEmail(email)}
-                        style={{fontSize: 18, fontFamily: font.regular,}}
-                        inputContainerStyle={{borderWidth: 0, borderColor: color.light, padding: 4, paddingLeft: 14, paddingRight: 14, borderRadius: 10, backgroundColor: color.light, shadowRadius: 8, shadowOpacity: 0.2, shadowColor: "#ccc", shadowOffset: {width: 1, height: 1},elevation: 4,}}
-                        />
-                </View>
-                <Text style={{color: "#000000", fontFamily: font.regular, fontSize: 20, marginTop: 24}}>Select any of the available dates and time to book.</Text>
-                {counsellingDays.map((data)=> {
-                    return(
-                        <TouchableOpacity activeOpacity={0.7} key={data.key}>
-                            <View style={styles.counselContainer}>
-                                <Text style={{fontSize: 16, color: '#000000', textAlign: 'center', fontFamily: font.regular}}>{data.Day}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    )
-                })}
-                
-            </View>
-            </View>
-            </SafeAreaView>
-        <StatusBar style="auto" translucent={false} />
-    </Modal>
+    
     {/* search Courses */}
     {/* <Modal visible={searchOpen} animationType="slide">
             
@@ -317,7 +279,7 @@ const Home = ({userId}) => {
             />
             </View>
         </View>
-        <View onPress={()=>setSearchOpen(true)}>
+        <View>
             <Input
                 placeholder="Search for a course" 
                 placeholderTextColor={color.primaryAlt}
@@ -342,13 +304,6 @@ const Home = ({userId}) => {
                     style={{width: 48, height: 48}}
                 />
                 <Text style={styles.supportText}>Pay Fees</Text>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.7} style={{alignItems: 'center', paddingLeft: 36}} onPress={()=>setOpen1(true)}>
-                <Image
-                    source={require('../../assets/Support.png')}
-                    style={{width: 48, height: 48}}
-                />
-                <Text style={styles.supportText}>Meet a counsellor</Text>
             </TouchableOpacity>
         </View>
         </View>
@@ -377,25 +332,21 @@ const Home = ({userId}) => {
             </ScrollView>
 
             <View style={{width: '100%', flexDirection: 'row', flexWrap: 'wrap', columnGap: 16, rowGap:16, justifyContent: 'center'}}>
-                {someData.map((data)=> {
-                    const {id, text, text1, img, color} = data
-                    return(
-                        <TouchableOpacity key={id} style={{width: "45%", height: 120, backgroundColor: color, borderRadius: 20,}} activeOpacity={0.7}>
-                            {img !== "" ?
-                                <Image
-                                source={img}
-                                style={{width: "100.5%", height: '100.5%', borderRadius: 20 }}
-                                />
-                                :
-                                null
-                            }
-                            <View style={{marginHorizontal: 16, marginVertical:12, position:'absolute'}}>
-                                <Text style={{fontFamily: font.medium, fontSize: 16, color: '#fff',}}>{text}</Text>
-                                <Text style={{fontFamily: font.regular, fontSize: 16, color: '#fff'}}>{text1}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    )
-                })}
+                <TouchableOpacity style={{width: "45%", height: 120, backgroundColor: '#FC6238', borderRadius: 20,}} activeOpacity={0.7} onPress={()=>navigation.navigate('SearchCourse')}>
+                    <Image source={timeImg} style={{width: "100.5%", height: '100.5%', borderRadius: 20 }}/>
+                    <View style={{marginHorizontal: 16, marginVertical:12, position:'absolute'}}>
+                        <Text style={{fontFamily: font.medium, fontSize: 16, color: '#fff',}}>Past</Text>
+                        <Text style={{fontFamily: font.regular, fontSize: 16, color: '#fff'}}>Questions</Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{width: "45%", height: 120, backgroundColor: "#273D52", borderRadius: 20,}} activeOpacity={0.7}>
+                    <Image source={complainImg} style={{width: "100.5%", height: '100.5%', borderRadius: 20 }}/>
+                    <View style={{marginHorizontal: 16, marginVertical:12, position:'absolute'}}>
+                        <Text style={{fontFamily: font.medium, fontSize: 16, color: '#fff',}}>Submit</Text>
+                        <Text style={{fontFamily: font.regular, fontSize: 16, color: '#fff'}}>a complaint</Text>
+                    </View>
+                </TouchableOpacity>
+                <SakaiTimetable/>
             </View>
         </View>
     </View>

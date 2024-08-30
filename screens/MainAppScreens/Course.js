@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 
-url = 'https://ugpartnerrex.pythonanywhere.com/'
+url = 'https://ugpartner.pythonanywhere.com/'
 
 
 const Course = ({route}) => {
